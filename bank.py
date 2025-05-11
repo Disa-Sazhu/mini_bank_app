@@ -9,13 +9,13 @@ def user_id():
      with open("users.txt", "r") as file:
          return f"U{int(file.readlines()[-1].split(',')[0][1:]) + 1:04}"
     
-def customer_id():
+def customer_user_id():
      if not os.path.exists('customer.txt') or os.path.getsize('customer.txt') ==0:
          return "C0001"
      
      with open("customer.txt", "r") as file:
          return f"U{int(file.readlines()[-1].split(',')[0][1:]) + 1:04}"
-customer_id()    
+customer_user_id()    
      
 def create_admin():
     if not os.path.exists('user.txt') or os.path.getsize('user.txt') ==0:
@@ -32,17 +32,18 @@ create_admin()
 # #==========================create_customer function=========================
 def create_customer():
         try:
-            if not os.path.exists('customer.txt') or os.path.getsize('customer.txt') ==0:
-                with open("customer.txt", "a") as file:
-                    customer_user_id=customer_id()
+            # if not os.path.exists('customer.txt') or os.path.getsize('customer.txt') ==0:
+            #     with open("customer.txt", "a") as file:
+                    new_id = customer_user_id()
+                    print("Your new customer ID is:", new_id)
                     password = input("Enter password for new customer: ")
-                with open("users.txt", "a") as file:
-                    file.write(f"{customer_user_id},{password}\n")
+                    with open("users.txt", "a") as file:
+                        file.write(f"{new_id},{password}\n")
         
         except FileNotFoundError:
             pass
-        print(f"Customer '{customer_id}' created successfully!")
-
+        print(f"Customer {new_id} created successfully!")
+#create_customer()
 
 
 #===============================Transaction_History======================================================
@@ -60,13 +61,13 @@ active_account_number = None
 
  #=========================create_account====================================
 def create_account():
-    global next_account_number
+    global next_account_number, active_account_number
     name = input("Enter account holder name: ").strip()
     address = input("Enter account holder address: ").strip()
     date_of_birth = input("Enter account holder D.O.B (DD/MM/YYYY): ").strip()
 
     try:
-        customer_id = input("Enter customer_id: ").strip()  
+        new_id = input("Enter customer_id: ").strip()  
         age = int(input("Enter account holder age: "))
         initial_balance = float(input("Enter initial balance: "))
         if initial_balance < 0:
@@ -78,7 +79,7 @@ def create_account():
 
     account_details = [
         next_account_number,
-        customer_id,
+        new_id,
         name,
         address,
         date_of_birth,
@@ -87,7 +88,7 @@ def create_account():
     ]
     record_transaction("Account Creation", next_account_number, initial_balance, "Initial deposit")
     
-
+    active_account_number=next_account_number
     next_account_number += 1
     accounts.append(account_details)
 
@@ -148,6 +149,8 @@ def customer_login():
         return None
 
 #=============================Deposit_function============================
+accounts = []
+next_account_number = 1001
 def deposit():
     global active_account_number
     if active_account_number is None:
@@ -167,7 +170,7 @@ def deposit():
         print("Account not found.")
         return
     
-    account[6] -= deposit_amount
+    account[6] += deposit_amount
     print("deposit successful!")
     print(f"Account Number: {account[0]}")
     print(f"New Balance: {account[6]}")
@@ -175,6 +178,9 @@ def deposit():
 
 
 #======================Withdraw_function====================================================
+accounts = []
+next_account_number = 1001
+active_account_number = None
 def withdraw():
     global active_account_number
     if active_account_number is None:
@@ -206,6 +212,9 @@ def withdraw():
 
 
 # #=======================Money_transfer_function==============================
+accounts = []
+next_account_number = 1001
+active_account_number = None
 def transfer_money():
     global active_account_number
     if active_account_number is None:
@@ -310,7 +319,11 @@ def admin_menu():
         print(".8 Update Accounts Details")
         print("9. Logout")
 
-        choice=("Enter a number from 1-7")
+        try:
+            choice = int(input("Enter a number from 1 to 9: "))
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+            continue
         if choice==1:
             print(">~~~=====Create_Customer=====~~~<")
             create_customer()
@@ -354,7 +367,11 @@ def customer_menu(customer_id):
         ##### print("7. View All Accounts")
         print("6. Logout")
 
-        choice=("Enter a number from 1-8")
+        try:
+            choice = int(input("Enter a number from 1 to 8: "))
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+            continue
         if choice==1:
             print(">~~~=====Deposit_Money=====~~~<")
             deposit()
