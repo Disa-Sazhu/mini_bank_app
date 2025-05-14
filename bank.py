@@ -14,7 +14,11 @@ def customer_user_id():
          return "C0001"
      
      with open("customer.txt", "r") as file:
-         return f"U{int(file.readlines()[-1].split(',')[0][1:]) + 1:04}"
+         lines = file.readlines()
+         last_line = lines[-1].strip()
+         last_id = last_line.split(',')[0]
+         next_number = int(last_id[1:]) + 1
+         return f"C{next_number:04d}"
 customer_user_id()    
      
 def create_admin():
@@ -43,7 +47,7 @@ def create_customer():
         except FileNotFoundError:
             pass
         print(f"Customer {new_id} created successfully!")
-#create_customer()
+create_customer()
 
 
 #===============================Transaction_History======================================================
@@ -149,8 +153,6 @@ def customer_login():
         return None
 
 #=============================Deposit_function============================
-accounts = []
-next_account_number = 1001
 def deposit():
     global active_account_number
     if active_account_number is None:
@@ -178,9 +180,6 @@ def deposit():
 
 
 #======================Withdraw_function====================================================
-accounts = []
-next_account_number = 1001
-active_account_number = None
 def withdraw():
     global active_account_number
     if active_account_number is None:
@@ -212,9 +211,6 @@ def withdraw():
 
 
 # #=======================Money_transfer_function==============================
-accounts = []
-next_account_number = 1001
-active_account_number = None
 def transfer_money():
     global active_account_number
     if active_account_number is None:
