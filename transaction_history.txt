@@ -1,0 +1,1 @@
+2025-05-14 09:57:51 | Account Creation | Account: 1001 | Amount: 1000.0 | Initial deposit

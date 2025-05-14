@@ -1,6 +1,3 @@
-U0001,Admin,Admin@123
-C0001,pass
-U0001,Admin,Admin@123
-U0001,Admin,Admin@123
+C0001,clsd
 U0001,Admin,Admin@123
 C0001,cus123

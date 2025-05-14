@@ -6,7 +6,7 @@ def user_id():
      if not os.path.exists('user.txt') or os.path.getsize('user.txt') ==0:
          return "U0001"
      
-     with open("users.txt", "r") as file:
+     with open("user.txt", "r") as file:
          return f"U{int(file.readlines()[-1].split(',')[0][1:]) + 1:04}"
     
 def customer_user_id():
@@ -31,8 +31,10 @@ def create_admin():
         print("Admin was created successfully, with user name 'Admin' and password 'Admin@123'")
 create_admin()
 
-
-
+def user_name():
+#if not os.path.exists('username.txt') or os.path.getsize('username.txt') ==0:
+    with open("username.txt","a") as file:
+        user_name=input("Enter a user name :")
 # #==========================create_customer function=========================
 def create_customer():
         try:
@@ -66,6 +68,13 @@ active_account_number = None
  #=========================create_account====================================
 def create_account():
     global next_account_number, active_account_number
+    user_name=input("Enter user name: ")
+    try:
+            with open("username.txt","r") as file:
+                if user_name==user_name():
+                    print("User name already taken.")
+    except FileNotFoundError:
+        print("No data found")
     name = input("Enter account holder name: ").strip()
     address = input("Enter account holder address: ").strip()
     date_of_birth = input("Enter account holder D.O.B (DD/MM/YYYY): ").strip()
@@ -88,7 +97,8 @@ def create_account():
         address,
         date_of_birth,
         age,
-        initial_balance
+        initial_balance,
+        user_name
     ]
     record_transaction("Account Creation", next_account_number, initial_balance, "Initial deposit")
     
@@ -102,7 +112,7 @@ account_details = create_account()
 
 if account_details:
     with open("customers.txt", "a") as file:
-        file.write(f"({account_details[0]}, {account_details[1]}, {account_details[2]})\n")
+        file.write(f"({account_details[0]}, {account_details[1]}, {account_details[2]},{account_details[7]})\n")
 
     with open("userdetails.txt", "a") as file:
         file.write(f"({account_details[0]},{account_details[2]}, {account_details[3]}, {account_details[4]}, {account_details[5]})\n")
@@ -116,6 +126,7 @@ if account_details:
     print(f"D.O.B: {account_details[4]}")
     print(f"Age: {account_details[5]}")
     print(f"Balance: {account_details[6]}")
+    print(f"User_nmae: {account_details[7]}")
 else:
     print("Account creation failed. Please try again with valid inputs.")
 
@@ -296,8 +307,55 @@ def update_account_details():
 
     print("Account details updated successfully!")
     print("Updated Details:", account)
+#Today==============================
 
-#=========================Transaction_History_Function==============
+def delete_customer():
+    try:
+        acc_num=int(input("enter the account number or user_id to delete :"))
+    except ValueError:
+        return
+    else:
+        print("You are not an admin")
+
+        if user_id==customer_user_id:
+            print("Are you sure? Admin")
+                #customer.pop(customer_user_id)
+
+
+
+
+
+#=========================display_account_count==============
+
+next_account_number=1001
+with open("account.txt","r") as file:
+    account_number= next_account_number
+    active_account_number+=next_account_number
+    acc_num=file.readlines()
+    print("Account number{account_number} created succesfully.")
+
+def account_count():
+    try:
+        with open("account.txt",'r') as file:
+            accounts=file.readlines()
+        print("Total Accounts:{len(accounts)}")
+    except FileNotFoundError:
+        print("No data available.")
+
+
+def display_total_users():
+    try:
+        with open("user.txt","r") as file:
+            total_users=file.readlines()
+        print("Total Users:,{len(total_user)}")
+    except FileNotFoundError:
+        print("No data available.")
+
+
+
+
+
+
 
 
 # #=======================================================================
@@ -313,7 +371,9 @@ def admin_menu():
         print("7. Transaction History")
         ## print("8. Change Intrest rate")(working on it update on future)
         print(".8 Update Accounts Details")
-        print("9. Logout")
+        print("9.Display Total Users")
+        print("10.Delete customer")
+        print("11. Logout")
 
         try:
             choice = int(input("Enter a number from 1 to 9: "))
@@ -345,6 +405,12 @@ def admin_menu():
             print(">~~~=====Update_Account_Details=====~~~<")
             update_account_details()
         elif choice==9:
+            print(">~~~=====Total_Users=====~~~<")
+            display_total_users()
+        elif choice==10:
+            print(">~~~=====Delete_Customer=====~~~<")
+            delete_customer()
+        elif choice==11:
             print("Thanks for using the service.")
             break
         else:
@@ -361,7 +427,8 @@ def customer_menu(customer_id):
         print("5.Check Balance")
         #### print("6. View Interest rate")
         ##### print("7. View All Accounts")
-        print("6. Logout")
+        print("6.Total Users")
+        print("7. Logout")
 
         try:
             choice = int(input("Enter a number from 1 to 8: "))
@@ -384,6 +451,9 @@ def customer_menu(customer_id):
             print(">~~~=====Check_Balance=====~~~<")
             check_balance()
         elif choice==6:
+            print(">~~~=====Total_Users=====~~~<")
+            display_total_users()
+        elif choice==7:
             print("Thanks for using the service.")
             break
         else:
